@@ -26,10 +26,11 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-<div class="wrap">
+<div class="wrap">	
+
     <?php
     NavBar::begin([
-        'brandLabel' => "LA LIQUOR STORE",#Yii::$app->name,
+        'brandLabel' => 'LA LIQUOR STORE',#Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -38,9 +39,16 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
+
+			
+			
+			
+
             ['label' => 'Inicio', 'url' => ['/site/index']],
-            ['label' => 'Acerca', 'url' => ['/site/about']],
-            ['label' => 'Contacto', 'url' => ['/site/contact']],
+            ['label' => 'Catálogo', 'url' => ['/producto/list']],
+            ['label' => 'Promociones', 'url' => ['promocion/index']],
+			
+			
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (
@@ -52,7 +60,18 @@ AppAsset::register($this);
                 )
                 . Html::endForm()
                 . '</li>'
-            )
+            ),
+
+			'<li><i class="glyphicon glyphicon-glass"></i></li>',
+
+			'<li>'
+                . Html::beginForm(['/site/logout'], 'get')
+				.Html::input('search')
+                . Html::submitButton('buscar')
+                . Html::endForm()
+                . '</li>',
+
+			['encode'=>false,'label' => '<i class="glyphicon glyphicon-shopping-cart"></i>', 'url' => ['#']],
         ],
     ]);
     NavBar::end();
