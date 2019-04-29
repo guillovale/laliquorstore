@@ -29,3 +29,4 @@ CREATE TABLE IF NOT EXISTS tbl_producto (
 
 alter table tbl_producto add column url char(200);
 
+

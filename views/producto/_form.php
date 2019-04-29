@@ -16,13 +16,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'detalle')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'unidades')->textInput() ?>
+    <?= $form->field($model, 'unidad')->textInput() ?>
 
     <?= $form->field($model, 'precio_compra')->textInput() ?>
 
-    <?= $form->field($model, 'precio_venta_pormayor')->textInput() ?>
-
-    <?= $form->field($model, 'precio_venta_unidad')->textInput() ?>
+    <?= $form->field($model, 'precio_unidad')->textInput() ?>
 
     <?= $form->field($model, 'descuento')->textInput() ?>
 

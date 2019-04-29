@@ -19,7 +19,7 @@ class ProductoSearch extends Producto
         return [
             [['id', 'id_categoria', 'id_marca'], 'integer'],
             [['codigo', 'detalle', 'url'], 'safe'],
-            [['unidades', 'precio_compra', 'precio_venta_pormayor', 'precio_venta_unidad', 'descuento'], 'number'],
+            [['unidad', 'precio_compra', 'precio_unidad', 'descuento'], 'number'],
         ];
     }
 
@@ -60,17 +60,17 @@ class ProductoSearch extends Producto
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'unidades' => $this->unidades,
+            'unidad' => $this->unidad,
             'precio_compra' => $this->precio_compra,
-            'precio_venta_pormayor' => $this->precio_venta_pormayor,
-            'precio_venta_unidad' => $this->precio_venta_unidad,
+            'precio_unidad' => $this->precio_unidad,
             'descuento' => $this->descuento,
             'id_categoria' => $this->id_categoria,
             'id_marca' => $this->id_marca,
         ]);
 
         $query->andFilterWhere(['like', 'codigo', $this->codigo])
-            ->andFilterWhere(['like', 'detalle', $this->detalle]);
+            ->andFilterWhere(['like', 'detalle', $this->detalle])
+			->andFilterWhere(['like', 'url', $this->url]);
 
         return $dataProvider;
     }

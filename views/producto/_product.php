@@ -20,7 +20,7 @@ use yii\helpers\Markdown;
 
     <div class="col-xs-4 price">
         <div class="row">
-            <div class="col-xs-12">$<?= $model->precio_venta_unidad ?></div>
+            <div class="col-xs-12">$<?= $model->precio_unidad ?></div>
             <div class="col-xs-12"><?= Html::a('Agregar a la carta', ['#', 'id' => $model->id], ['class' => 'btn btn-success'])?></div>
         </div>
     </div>
