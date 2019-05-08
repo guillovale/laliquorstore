@@ -71,13 +71,15 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+	
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+		#echo var_dump(Yii::$app->user->identity->username); exit;
+           $this->goBack();
         }
 
         $model->password = '';
@@ -93,7 +95,7 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+       Yii::$app->user->logout();
 
         return $this->goHome();
     }

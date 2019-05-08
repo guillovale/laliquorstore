@@ -18,8 +18,8 @@ class ProductoSearch extends Producto
     {
         return [
             [['id', 'id_categoria', 'id_marca'], 'integer'],
-            [['codigo', 'detalle', 'url'], 'safe'],
-            [['unidad', 'precio_compra', 'precio_unidad', 'descuento'], 'number'],
+            [['codigo', 'detalle', 'tipo', 'categorias', 'marcas'], 'safe'],
+            #[['unidad', 'precio_compra', 'precio_unidad', 'descuento'], 'number'],
         ];
     }
 
@@ -42,7 +42,9 @@ class ProductoSearch extends Producto
     public function search($params)
     {
         $query = Producto::find();
-
+		$query->joinWith(['tipoproducto']);
+		$query->joinWith(['categoria']);
+		$query->joinWith(['marca']);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -60,10 +62,10 @@ class ProductoSearch extends Producto
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'unidad' => $this->unidad,
-            'precio_compra' => $this->precio_compra,
-            'precio_unidad' => $this->precio_unidad,
-            'descuento' => $this->descuento,
+           # 'unidad' => $this->unidad,
+           # 'precio_compra' => $this->precio_compra,
+           # 'precio_unidad' => $this->precio_unidad,
+           # 'descuento' => $this->descuento,
             'id_categoria' => $this->id_categoria,
             'id_marca' => $this->id_marca,
         ]);
@@ -71,6 +73,9 @@ class ProductoSearch extends Producto
         $query->andFilterWhere(['like', 'codigo', $this->codigo])
             ->andFilterWhere(['like', 'detalle', $this->detalle])
 			->andFilterWhere(['like', 'url', $this->url]);
+		$query->andFilterWhere(['like', 'tbl_tipo_producto.detalle', $this->tipo]);
+		$query->andFilterWhere(['like', 'tbl_categoria.detalle', $this->categorias]);
+		$query->andFilterWhere(['like', 'tbl_marca.detalle', $this->marcas]);
 
         return $dataProvider;
     }

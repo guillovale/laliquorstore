@@ -7,15 +7,15 @@ use yii\grid\GridView;
 /* @var $searchModel app\models\MarcaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Marcas';
+$this->title = 'Marca';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="marca-index">
+<div style="font-size:12px" class="marca-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Create Marca', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Marca', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

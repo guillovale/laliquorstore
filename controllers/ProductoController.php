@@ -6,10 +6,15 @@ use Yii;
 use app\models\Producto;
 use app\models\ProductoSearch;
 use app\models\Categoria;
+use app\models\Marca;
+use app\models\TipoProducto;
 use yii\web\Controller;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
+use yii\filters\AccessControl;
 
 /**
  * ProductoController implements the CRUD actions for Producto model.
@@ -22,10 +27,22 @@ class ProductoController extends Controller
     public function behaviors()
     {
         return [
+           		'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['delete','update', 'create', 'index', 'view'],
+                'rules' => [
+                    [
+                        //'actions' => ['delete','update', 'create'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['post'],
                 ],
             ],
         ];
@@ -67,9 +84,38 @@ class ProductoController extends Controller
     public function actionCreate()
     {
         $model = new Producto();
+		$model->loadDefaultValues();
+		$tipo = ArrayHelper::map(TipoProducto::find()
+				#->select('id, detalle')
+				#->where(['in', 'sigla', $sigla])
+				->orderBy(['detalle' => SORT_ASC])
+				->all(), 'id', 'detalle');
+		$categoria = ArrayHelper::map(Categoria::find()
+				#->select('id, detalle')
+				#->where(['in', 'sigla', $sigla])
+				->orderBy(['detalle' => SORT_ASC])
+				->all(), 'id', 'detalle');
+		$marca = ArrayHelper::map(Marca::find()
+				#->select('id, detalle')
+				#->where(['in', 'sigla', $sigla])
+				->orderBy(['detalle' => SORT_ASC])
+				->all(), 'id', 'detalle');
+			
+		$this->view->params['tipo'] = $tipo;
+		$this->view->params['categoria'] = $categoria;
+		$this->view->params['marca'] = $marca;
+		$this->view->params['marca'] = $marca;
+		
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) ) 
+		{
+			$model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            if ($model->upload()) {
+				#echo var_dump($model->imageFile->name); exit;
+                $model->url = 'images/' . $model->imageFile->name;
+            }
+			if ($model->save())
+            	return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -87,9 +133,36 @@ class ProductoController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		$tipo = ArrayHelper::map(TipoProducto::find()
+				#->select('id, detalle')
+				#->where(['in', 'sigla', $sigla])
+				->orderBy(['detalle' => SORT_ASC])
+				->all(), 'id', 'detalle');
+		$categoria = ArrayHelper::map(Categoria::find()
+				#->select('id, detalle')
+				#->where(['in', 'sigla', $sigla])
+				->orderBy(['detalle' => SORT_ASC])
+				->all(), 'id', 'detalle');
+		$marca = ArrayHelper::map(Marca::find()
+				#->select('id, detalle')
+				#->where(['in', 'sigla', $sigla])
+				->orderBy(['detalle' => SORT_ASC])
+				->all(), 'id', 'detalle');
+			
+		$this->view->params['tipo'] = $tipo;
+		$this->view->params['categoria'] = $categoria;
+		$this->view->params['marca'] = $marca;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+		if ($model->load(Yii::$app->request->post()) ) 
+		{
+			$model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            if ($model->upload()) {
+				#echo var_dump($model->imageFile->name); exit;
+                $model->url = 'images/' . $model->imageFile->name;
+            }
+			 $model->imageFile = null;
+			if ($model->save())
+            	return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -111,27 +184,77 @@ class ProductoController extends Controller
         return $this->redirect(['index']);
     }
 
-	    public function actionList($id = null)
+	public function actionCatalogo($id = null)
     {
         /** @var Category $category */
-        $category = null;
-        $categories = Categoria::find()->indexBy('id')->orderBy('id')->all();
-        $productsQuery = Producto::find();
-        if ($id !== null && isset($categories[$id])) {
-            $category = $categories[$id];
-            $productsQuery->where(['category_id' => $this->getCategoryIds($categories, $id)]);
+        
+        $productos = Producto::find();
+		$categorias = Categoria::find()->orderBy('id')->all();
+		$categoria = null;
+        if ($id !== null) {
+			$categoria = Categoria::find()->where(['id' => $id])->one();
+            if ($categoria) {
+				$productos->where(['id_categoria' => $categoria->id]);
+			}
         }
         $productsDataProvider = new ActiveDataProvider([
-            'query' => $productsQuery,
+            'query' => $productos,
             'pagination' => [
                 'pageSize' => 10,
             ],
         ]);
         return $this->render('catalogo', [
-            'category' => $category,
-            #'menuItems' => $this->getMenuItems($categories, isset($category->id) ? $category->id : null),
+            'category' => $categoria,
+            'menuItems' => $this->getMenuItems($categorias),
             'productsDataProvider' => $productsDataProvider,
         ]);
+    }
+
+
+	    /**
+     * @param Category[] $categories
+     * @param int $activeId
+     * @param int $parent
+     * @return array
+     */
+    private function getMenuItems($categorias)
+    {
+        $menuItems = [];
+		#echo var_dump($categorias); exit;
+        foreach ($categorias as $categoria) {
+			#echo var_dump($categoria->id, $categoria->detalle); exit;
+            #if ($category->parent_id === $parent) {
+			array_push($menuItems, ['label' => $categoria->detalle, 'url' => ['producto/catalogo', 'id' => $categoria->id]]);
+                #$menuItems[$categoria->id] = [
+                    #'active' => $activeId === $category->id,
+                 #   'label' => $categoria->detalle,
+                  #  'url' => ['producto/catalogo', 'id' => $categoria->id],
+                  #  'items' => $menuItems,
+                #];
+            #}
+        }
+		#echo var_dump($menuItems); exit;
+        return $menuItems;
+    }
+    /**
+     * Returns IDs of category and all its sub-categories
+     *
+     * @param Category[] $categories all categories
+     * @param int $categoryId id of category to start search with
+     * @param array $categoryIds
+     * @return array $categoryIds
+     */
+    private function getCategoryIds($categories, $categoryId, &$categoryIds = [])
+    {
+        foreach ($categories as $category) {
+            if ($category->id == $categoryId) {
+                $categoryIds[] = $category->id;
+            }
+            elseif ($category->parent_id == $categoryId){
+                $this->getCategoryIds($categories, $category->id, $categoryIds);
+            }
+        }
+        return $categoryIds;
     }
 
 

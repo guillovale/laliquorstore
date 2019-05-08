@@ -3,17 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Categoria;
-use app\models\CategoriaSearch;
+use app\models\TipoProducto;
+use app\models\TipoProductoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-
 /**
- * CategoriaController implements the CRUD actions for Categoria model.
+ * TipoproductoController implements the CRUD actions for TipoProducto model.
  */
-class CategoriaController extends Controller
+class TipoproductoController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -43,12 +42,12 @@ class CategoriaController extends Controller
     }
 
     /**
-     * Lists all Categoria models.
+     * Lists all TipoProducto models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new CategoriaSearch();
+        $searchModel = new TipoProductoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -58,7 +57,7 @@ class CategoriaController extends Controller
     }
 
     /**
-     * Displays a single Categoria model.
+     * Displays a single TipoProducto model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -71,13 +70,13 @@ class CategoriaController extends Controller
     }
 
     /**
-     * Creates a new Categoria model.
+     * Creates a new TipoProducto model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Categoria();
+        $model = new TipoProducto();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -89,7 +88,7 @@ class CategoriaController extends Controller
     }
 
     /**
-     * Updates an existing Categoria model.
+     * Updates an existing TipoProducto model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -109,7 +108,7 @@ class CategoriaController extends Controller
     }
 
     /**
-     * Deletes an existing Categoria model.
+     * Deletes an existing TipoProducto model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -123,15 +122,15 @@ class CategoriaController extends Controller
     }
 
     /**
-     * Finds the Categoria model based on its primary key value.
+     * Finds the TipoProducto model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Categoria the loaded model
+     * @return TipoProducto the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Categoria::findOne($id)) !== null) {
+        if (($model = TipoProducto::findOne($id)) !== null) {
             return $model;
         }
 

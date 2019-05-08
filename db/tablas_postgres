@@ -3,6 +3,11 @@ sudo -i -u postgres
 createdb laliquor
 psql laliquor
 
+CREATE TABLE tbl_tipo_producto (
+ id SERIAL PRIMARY KEY,
+ detalle TEXT NOT NULL UNIQUE
+);
+
 CREATE TABLE tbl_categoria (
  id SERIAL PRIMARY KEY,
  detalle TEXT NOT NULL UNIQUE
@@ -22,15 +27,32 @@ CREATE TABLE tbl_producto (
  precio_unidad 	numeric DEFAULT 0.00,
  descuento 	numeric DEFAULT 0.00,
  url TEXT,
+ id_tipo INTEGER references tbl_tipo_producto (id),
  id_categoria INTEGER references tbl_categoria (id),
  id_marca INTEGER references tbl_marca (id)
+ 
 );
 
-CREATE TABLE tbl_inventario(
+// added column
+
+ALTER TABLE tbl_producto 
+ADD COLUMN id_tipo INTEGER references tbl_tipo_producto (id);
+
+
+CREATE TABLE tbl_inventario (
 	id SERIAL PRIMARY KEY,
 	id_producto INTEGER NOT NULL UNIQUE,
 	existencia numeric  DEFAULT 0.00,
 	FOREIGN KEY (id_producto) REFERENCES tbl_producto (id) ON DELETE CASCADE ON UPDATE CASCADE);
+
+CREATE TABLE tbl_usuario (
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(50) NOT NULL UNIQUE,
+	email VARCHAR(100),
+	password CHAR(255),
+	fecha date,
+	rol CHAR(1)
+	);
 
 CREATE OR REPLACE FUNCTION proceso_inventario() RETURNS TRIGGER AS $crea_inventario$
     BEGIN

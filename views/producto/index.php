@@ -10,12 +10,12 @@ use yii\grid\GridView;
 $this->title = 'Productos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="producto-index">
+<div style="font-size:11px" class="producto-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h3><?= Html::encode($this->title) ?></h3>
 
     <p>
-        <?= Html::a('Create Producto', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Producto', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -26,16 +26,54 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'codigo:ntext',
-            'detalle:ntext',
-            'unidad',
-            'precio_compra',
-            //'precio_venta_pormayor',
+            #'id',
+            'codigo',
+			[
+				'attribute'=>'tipo',
+				'label'=>'Tipo',
+				'format'=>'text',//raw, html
+				'content'=>function($data){
+				return isset($data->tipoproducto->detalle)?$data->tipoproducto->detalle:null;}
+			],
+			[
+				'attribute'=>'categorias',
+				'label'=>'Categoría',
+				'format'=>'text',
+				'content'=>function($data){
+					return isset($data->categoria->detalle)?$data->categoria->detalle:null;}
+				
+			],
+			[
+				'attribute'=>'marcas',
+				'label'=>'Marca',
+				'format'=>'text',//raw, html
+				'content'=>function($data){
+					#echo var_dump($data); exit;
+					return isset($data->marca->detalle)?$data->marca->detalle:null;}
+			],
+            'detalle',
+			[
+				'attribute'=>'unidad',
+				'format'=>'text',//raw, html
+				'enableSorting'=>false,
+			],
+			'precio_compra',
             'precio_unidad',
-            'descuento',
-            'id_categoria',
-            'id_marca',
+			'descuento',
+			[
+				'attribute'=>'url',
+				'format'=>'text',//raw, html
+				'enableSorting'=>false,
+			],
+            
+            		[
+				'attribute'=>'inventario.existencia',
+				'label'=>'Existencia',
+				'format'=>'text',//raw, html
+			],
+			
+            #'id_categoria',
+            #'id_marca',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

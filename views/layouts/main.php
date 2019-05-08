@@ -28,6 +28,43 @@ AppAsset::register($this);
 
 <div class="wrap">	
 
+	<?php
+	$usuario = Yii::$app->user->identity;
+	$menuItems = [];
+	$menuAdmin = [];
+	$menuCliente = [];
+	$menuProducto = [];		
+	
+	array_push($menuItems, ['label' => 'Inicio', 'url' => ['/site/index']]);
+	array_push($menuItems, ['label' => 'Catálogo', 'url' => ['/producto/catalogo']]);
+	array_push($menuItems, ['label' => 'Promociones', 'url' => ['promocion/index']]);
+	#array_push($menuItems, $menuCliente );
+	if ($usuario) 
+	{
+		if ($usuario->rol == 'A') {
+			array_push($menuProducto, ['label' => 'Producto', 'url' => ['/producto/index']]);
+			array_push($menuProducto, ['label' => 'Tipo Producto', 'url' => ['/tipoproducto/index']]);
+			array_push($menuProducto, ['label' => 'Categoría', 'url' => ['categoria/index']]);
+			array_push($menuProducto, ['label' => 'Marca', 'url' => ['marca/index']]);
+			#array_push($menuAdmin, ['label' => 'Producto', 'items' => $menuProducto]);
+			array_push($menuItems, ['label' => 'Producto', 'items' => $menuProducto]);
+			
+		}
+	}
+	array_push($menuItems, ['encode'=>false,'label' => '<i class="glyphicon glyphicon-shopping-cart"></i>', 'url' => ['#']]);
+
+	if (Yii::$app->user->isGuest)
+		array_push($menuItems, ['encode'=>false, 'label' => '<i class="glyphicon glyphicon-log-in"></i> Ingresar', 'url' => ['/site/login']]);
+	else
+		array_push($menuItems, [
+									'encode'=>false,
+								  'label' => '<i class="glyphicon glyphicon-log-out"></i> Salir',
+								  'url' => ['site/logout'],
+								  'linkOptions' => ['data-method' => 'post'],
+								]);
+			
+	?>	
+
     <?php
     NavBar::begin([
         'brandLabel' => 'LA LIQUOR STORE',#Yii::$app->name,
@@ -38,41 +75,9 @@ AppAsset::register($this);
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-
-			
-			
-			
-
-            ['label' => 'Inicio', 'url' => ['/site/index']],
-            ['label' => 'Catálogo', 'url' => ['/producto/list']],
-            ['label' => 'Promociones', 'url' => ['promocion/index']],
-			
-			
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            ),
-
-			'<li><i class="glyphicon glyphicon-glass"></i></li>',
-
-			'<li>'
-                . Html::beginForm(['/site/logout'], 'get')
-				.Html::input('search')
-                . Html::submitButton('buscar')
-                . Html::endForm()
-                . '</li>',
-
-			['encode'=>false,'label' => '<i class="glyphicon glyphicon-shopping-cart"></i>', 'url' => ['#']],
-        ],
+        'items' => 
+			$menuItems,
+        
     ]);
     NavBar::end();
     ?>
@@ -84,13 +89,14 @@ AppAsset::register($this);
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
+	<?php #echo var_dump(Yii::$app->user); exit; ?>
 </div>
 
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; zooPC <?= date('Y') ?></p>
 
-        <p class="pull-right"><?php #Yii::powered() ?></p>
+        <p class="pull-right"></p>
     </div>
 </footer>
 
