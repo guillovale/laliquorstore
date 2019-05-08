@@ -54,6 +54,10 @@ CREATE TABLE tbl_usuario (
 	rol CHAR(1)
 	);
 
+#agregar usuario admin
+create extension pgcrypto;
+insert into tbl_usuario (0, 'admin', 'valepetroguillo@gmail.com', crypt('administrador',gen_salt('bf')), now(), 'A')
+
 CREATE OR REPLACE FUNCTION proceso_inventario() RETURNS TRIGGER AS $crea_inventario$
     BEGIN
        IF (TG_OP = 'INSERT') THEN
