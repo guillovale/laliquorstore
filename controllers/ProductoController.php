@@ -186,6 +186,14 @@ class ProductoController extends Controller
 
 	public function actionCatalogo($id = null)
     {
+
+		$searchModel = new ProductoSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        #return $this->render('index', [
+         #   'searchModel' => $searchModel,
+         #   'dataProvider' => $dataProvider,
+        #]);
         /** @var Category $category */
         
         $productos = Producto::find();
@@ -207,6 +215,8 @@ class ProductoController extends Controller
             'category' => $categoria,
             'menuItems' => $this->getMenuItems($categorias),
             'productsDataProvider' => $productsDataProvider,
+			'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 

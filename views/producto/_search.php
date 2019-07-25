@@ -1,8 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
+#use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\ProductoSearch */
 /* @var $form yii\widgets\ActiveForm */
@@ -11,33 +11,22 @@ use yii\widgets\ActiveForm;
 <div class="producto-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
+	 'layout' => 'inline',
+        'action' => ['catalogo'],
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+   <?= $form->field($model, 'detalle') ?>
+	
+   <?php // echo $form->field($model, 'id_categoria') ?>
 
-    <?= $form->field($model, 'codigo') ?>
-
-    <?= $form->field($model, 'detalle') ?>
-
-    <?= $form->field($model, 'unidades') ?>
-
-    <?= $form->field($model, 'precio_compra') ?>
-
-    <?php // echo $form->field($model, 'precio_venta_pormayor') ?>
-
-    <?php // echo $form->field($model, 'precio_venta_unidad') ?>
-
-    <?php // echo $form->field($model, 'descuento') ?>
-
-    <?php // echo $form->field($model, 'id_categoria') ?>
-
-    <?php // echo $form->field($model, 'id_marca') ?>
+   <?php // echo $form->field($model, 'id_marca') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+	
+        <?php echo Html::submitButton('<span class="glyphicon glyphicon-search"></span>', ['class' => 'btn btn-primary']) ?>
+	
+        <?php #echo  Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

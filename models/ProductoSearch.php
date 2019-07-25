@@ -71,7 +71,7 @@ class ProductoSearch extends Producto
         ]);
 
         $query->andFilterWhere(['like', 'codigo', $this->codigo])
-            ->andFilterWhere(['like', 'detalle', $this->detalle])
+            ->andFilterWhere(['like', 'tbl_producto.detalle', $this->detalle])
 			->andFilterWhere(['like', 'url', $this->url]);
 		$query->andFilterWhere(['like', 'tbl_tipo_producto.detalle', $this->tipo]);
 		$query->andFilterWhere(['like', 'tbl_categoria.detalle', $this->categorias]);

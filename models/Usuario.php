@@ -136,7 +136,7 @@ class Usuario extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function validatePassword($password)
     {
 		#echo var_dump(crypt($password, $this->password), $this->password, hash_equals($this->password, crypt($password, $this->password))); exit;
-        return password_verify($password, trim($this->password));
+        return password_verify($password, ($this->password));
     }
 	
 	public function setPassword($password)

@@ -79,6 +79,7 @@ AppAsset::register($this);
 			$menuItems,
         
     ]);
+
     NavBar::end();
     ?>
 
