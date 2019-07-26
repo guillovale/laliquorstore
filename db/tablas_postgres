@@ -57,6 +57,7 @@ CREATE TABLE tbl_usuario (
 #agregar usuario admin
 create extension pgcrypto;
 insert into tbl_usuario (0, 'admin', 'valepetroguillo@gmail.com', crypt('administrador',gen_salt('bf')), now(), 'A')
+SELECT username FROM tbl_usuario WHERE username = 'admin' AND password = crypt('administrador', password);
 
 CREATE OR REPLACE FUNCTION proceso_inventario() RETURNS TRIGGER AS $crea_inventario$
     BEGIN
