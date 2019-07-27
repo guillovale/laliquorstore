@@ -54,7 +54,7 @@ class Producto extends \yii\db\ActiveRecord
             [['id_marca'], 'exist', 'skipOnError' => true, 'targetClass' => Marca::className(), 'targetAttribute' => ['id_marca' => 'id']],
             [['id_categoria'], 'exist', 'skipOnError' => true, 'targetClass' => Categoria::className(), 'targetAttribute' => ['id_categoria' => 'id']],
 			[['id_tipo'], 'exist', 'skipOnError' => true, 'targetClass' => TipoProducto::className(), 'targetAttribute' => ['id_tipo' => 'id']],
-			[['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, gif, jpeg', 'maxSize' => 512000, 'tooBig' => 'El límite es 512KB'],
+			[['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, gif', 'maxSize' => 512000, 'tooBig' => 'El límite es 512KB'],
         ];
     }
 
