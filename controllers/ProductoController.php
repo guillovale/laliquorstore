@@ -114,6 +114,7 @@ class ProductoController extends Controller
 				#echo var_dump($model->imageFile->name); exit;
                 $model->url = 'images/' . $model->imageFile->name;
             }
+			$model->imageFile = null;
 			if ($model->save())
             	return $this->redirect(['view', 'id' => $model->id]);
         }
