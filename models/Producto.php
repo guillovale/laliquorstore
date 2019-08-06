@@ -44,7 +44,7 @@ class Producto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['codigo', 'detalle'], 'required'],
+            [['detalle'], 'required'],
             [['codigo', 'detalle', 'url'], 'string'],
             [['unidad', 'precio_compra', 'precio_unidad', 'descuento'], 'number'],
 			#['unidad', 'default', 'value'=> '1'],

@@ -37,6 +37,7 @@ CREATE TABLE tbl_producto (
 
 ALTER TABLE tbl_producto 
 ADD COLUMN id_tipo INTEGER references tbl_tipo_producto (id);
+ALTER TABLE tbl_producto ALTER COLUMN codigo TYPE text SET NULL
 
 
 CREATE TABLE tbl_inventario (
