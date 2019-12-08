@@ -10,8 +10,9 @@ class CartController extends \yii\web\Controller
     {
         $product = Producto::findOne($id);
         if ($product) {
-            \Yii::$app->cart->put($product);
-            return $this->goBack();
+           # \Yii::$app->cart->put($product);
+            #return $this->goBack();
+			$this->redirect(['producto/catalogo']);
         }
     }
     public function actionList()
