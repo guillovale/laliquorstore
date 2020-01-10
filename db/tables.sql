@@ -11,6 +11,15 @@ CREATE TABLE IF NOT EXISTS tbl_marca (
  detalle TEXT NOT NULL UNIQUE
 );
 
+CREATE TABLE IF NOT EXISTS tbl_usuario (
+	id INTEGER PRIMARY KEY,
+	username VARCHAR(50) NOT NULL UNIQUE,
+	email VARCHAR(100),
+	password CHAR(255),
+	fecha date,
+	rol CHAR(1)
+	);
+
 CREATE TABLE IF NOT EXISTS tbl_producto (
  id INTEGER PRIMARY KEY,
  codigo TEXT NOT NULL UNIQUE,

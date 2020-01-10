@@ -1,11 +1,11 @@
 <?php
 
 return [
-	'class' => 'yii\db\Connection',
-    	'dsn' => 'pgsql:host=localhost;port=5432;dbname=laliquor',
-    	'username' => 'postgres',
-    	'password' => 'postgres',
-    	'charset' => 'utf8',
+	#'class' => 'yii\db\Connection',
+    	#'dsn' => 'pgsql:host=localhost;port=5432;dbname=laliquor',
+    	#'username' => 'postgres',
+    	#'password' => 'postgres',
+    	#'charset' => 'utf8',
 	
 
 	#'class' => 'yii\db\Connection',
@@ -21,8 +21,8 @@ return [
     #'charset' => 'utf8',
 
 	# connection sqlite
-	#'class' => 'yii\db\Connection',
-	#'dsn' => 'sqlite:@app/db/liquor.db',
+	'class' => 'yii\db\Connection',
+	'dsn' => 'sqlite:@app/db/liquor.db',
 
     // Schema cache options (for production environment)
     //'enableSchemaCache' => true,
