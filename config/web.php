@@ -54,12 +54,14 @@ $config = [
         'db' => $db,
         
         'urlManager' => [
-            'enablePrettyUrl' => false,
+            'enablePrettyUrl' => true,
             #'enableStrictParsing' => true,
             'showScriptName' => false,
-            'rules' => [
-            	#['class' => 'yii\rest\UrlRule', 'controller' => 'Productojson'],
-            ],
+            'rules' => array(
+								'<controller:\w+>/<id:\d+>' => '<controller>/view',
+								'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+								'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+						 ),
         ],
         	
     ],
