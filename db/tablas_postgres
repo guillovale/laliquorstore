@@ -1,0 +1,108 @@
+# crear db en line a comandos
+createdb -h localhost -p 5432 -U postgres testdb
+# password: postgres
+
+# crear tablas postgres
+
+# ingresar a postgres
+sudo -i -u postgres
+# o también
+sudo -u postgres psql
+
+# crear esquema
+
+createdb laliquor
+psql laliquor
+
+# o en postgres=#
+CREATE DATABASE testdb;
+
+CREATE TABLE tbl_tipo_producto (
+ id SERIAL PRIMARY KEY,
+ detalle TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE tbl_categoria (
+ id SERIAL PRIMARY KEY,
+ detalle TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE tbl_marca (
+ id SERIAL PRIMARY KEY,
+ detalle TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE tbl_producto (
+ id SERIAL PRIMARY KEY,
+ codigo TEXT NOT NULL UNIQUE,
+ detalle TEXT NOT NULL UNIQUE,
+ unidad 	numeric DEFAULT 1,
+ precio_compra 	numeric DEFAULT 0.00,
+ precio_unidad 	numeric DEFAULT 0.00,
+ descuento 	numeric DEFAULT 0.00,
+ url TEXT,
+ id_tipo INTEGER references tbl_tipo_producto (id),
+ id_categoria INTEGER references tbl_categoria (id),
+ id_marca INTEGER references tbl_marca (id)
+ 
+);
+
+// added column
+
+ALTER TABLE tbl_producto 
+ADD COLUMN id_tipo INTEGER references tbl_tipo_producto (id);
+ALTER TABLE tbl_producto ALTER COLUMN codigo TYPE text SET NULL
+
+
+CREATE TABLE tbl_inventario (
+	id SERIAL PRIMARY KEY,
+	id_producto INTEGER NOT NULL UNIQUE,
+	existencia numeric  DEFAULT 0.00,
+	FOREIGN KEY (id_producto) REFERENCES tbl_producto (id) ON DELETE CASCADE ON UPDATE CASCADE);
+
+CREATE TABLE tbl_usuario (
+	id SERIAL PRIMARY KEY,
+	username VARCHAR(50) NOT NULL UNIQUE,
+	email VARCHAR(100),
+	password CHAR(255),
+	fecha date,
+	rol CHAR(1)
+	);
+
+#agregar usuario admin
+create extension pgcrypto;
+insert into tbl_usuario (0, 'admin', 'valepetroguillo@gmail.com', crypt('administrador',gen_salt('bf')), now(), 'A')
+SELECT username FROM tbl_usuario WHERE username = 'admin' AND password = crypt('administrador', password);
+
+CREATE OR REPLACE FUNCTION proceso_inventario() RETURNS TRIGGER AS $crea_inventario$
+    BEGIN
+       IF (TG_OP = 'INSERT') THEN
+            INSERT INTO tbl_inventario(id_producto, existencia) values(NEW.id, 0.00);
+            RETURN NEW;
+        END IF;
+        RETURN NULL; -- result is ignored since this is an AFTER trigger
+    END;
+$crea_inventario$ LANGUAGE plpgsql;
+
+CREATE TRIGGER crea_inventario
+AFTER INSERT -- OR UPDATE OR DELETE 
+ON tbl_producto
+    FOR EACH ROW EXECUTE PROCEDURE crea_inventario();
+
+
+
+CREATE OR REPLACE FUNCTION crea_inventario()
+  RETURNS trigger AS
+$BODY$
+BEGIN
+ INSERT INTO tbl_inventario(id_producto, existencia) values(NEW.id, 0.00);
+  
+ RETURN NEW;
+END;
+$BODY$ LANGUAGE plpgsql;
+
+CREATE TRIGGER last_name_changes
+  BEFORE UPDATE
+  ON employees
+  FOR EACH ROW
+  EXECUTE PROCEDURE log_last_name_changes();
