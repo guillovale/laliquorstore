@@ -29,6 +29,7 @@
         "fxp/composer-asset-plugin": "*",
 				"ext-gd": "*"
     },
+    
     "config": {
         "process-timeout": 1800,
         "fxp-asset": {
