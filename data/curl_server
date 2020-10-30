@@ -1,0 +1,1 @@
+curl -X POST -H 'Authorization: Basic ZGVtb2FwcDpkZW1vcGFzcw==' -d "grant_type=client_credentials" -i http://localhost:8080/server

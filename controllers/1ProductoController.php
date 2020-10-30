@@ -17,12 +17,7 @@ use yii\web\UploadedFile;
 use yii\filters\AccessControl;
 use yii\db\Query;
 use yii\helpers\Url;
-#use Firebase\JWT\JWT;
-use Firebase\JWT\JWT;
 
-#var_dump(file_exists(__DIR__. '/../vendor/firebase/php-jwt/src/JWT.php'));
-#exit;
-require_once __DIR__. '/../vendor/firebase/php-jwt/src/JWT.php';
 
 /**
  * ProductoController implements the CRUD actions for Producto model.
@@ -237,123 +232,43 @@ class ProductoController extends Controller
 
 		private function authenticate()
     {
-    	if (file_exists($this->getProjectRoot(). '/data/public.key'))
-    	{ 
-    		$publicKey = file_get_contents($this->getProjectRoot().'/data/public.key', true); 	
-				$authHeader = Yii::$app->request->headers["authorization"];
-				$bearer = null;
-			
-				
-				
-				if ($authHeader !== null && preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) 			
-				{
-					$bearer = $matches[1];
-										
-					if ($bearer !== null) 
-		      {
-		      	#$key = $this->getKey(self::GET_kEY_URL);
-		      	
-		      	
-		      	
-		      	#if (!$key)
-		      	#	return false;
-		      	
-		      	return $this->validar_token($bearer, $publicKey);
-		      }
-		    }
-		  }
+    	  	
+			$authHeader = Yii::$app->request->headers["authorization"];
+			$bearer = null;
+			if ($authHeader !== null && preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) 			{
+				$bearer = $matches[1];
+        if ($bearer !== null) {
+        	$key = $this->getKey(self::GET_kEY_URL);
+        	if (!$key)
+        		return false;
+        	
+        	return $this->validar_token($bearer, $key);
+        }
+      }
       return false;
     }
     
-    private function validar_token($jwt, $secret) {
+    private function validar_token($jwt, $secret = 'secret') {
 	// split the jwt
-			
 			$tokenParts = explode('.', $jwt);
 			$header = base64_decode($tokenParts[0]);
 			$payload = base64_decode($tokenParts[1]);
 			$signature_provided = $tokenParts[2];
-			
 			#var_dump(json_decode($header, true)["kid"], $signature_provided, '---');
 			// verificar expiración de tpken
 			$expirar = json_decode($payload)->exp;
 			$expira_token = ($expirar - time()) < 0;
-			
-			
-			// build a signature based on the header and payload using the secret
-			#$base64UrlHeader = base64_encode($header);
-			#$base64UrlPayload = base64_encode($payload);
-			#$signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, $secret, true);
-			#$base64UrlSignature = base64_encode($signature);
-
-			// verify it matches the signature provided in the token
-			#$signatureValid = ($base64UrlSignature === $signature_provided);
-
-			
-
-			#var_dump($jwt, $base64UrlSignature, '--', $signature_provided);
-			#return TRUE;
-			#exit;
-			
-			#if(TRUE)
-			#{
-
-				
-						
-			#}
-			try
-			{
-				$decoded = JWT::decode($jwt, $secret, array('RS256'));
-				/*
-				 NOTE: This will now be an object instead of an associative array. To get
-				 an associative array, you will need to cast it as such:
-				*/
-
-				$decoded_array = (array) $decoded;
-				echo "Decode:\n" . print_r($decoded_array, true) . "\n";
-				#var_dump($decoded);
-				
-			}
-			catch (Exception $e)
-			{
-				http_response_code(401);
-				return FALSE;
-				#echo json_encode(array(
-        #"message" => "Access denied.",
-        #"error" => $e->getMessage()
-    		#));
-			}
-			#exit;
-		
-			#echo "Header:\n" . $header . "\n";
-			#echo "Payload:\n" . $payload . "\n";
-
-			if ($expira_token) {
-					echo "El Token ha expirado.\n";
-					return FALSE;
-			} else {
-					echo "El Token aún no expira.\n";
-			}
-
-			return TRUE;
-			#if ($signatureValid) {
-			#		echo "The signature is valid.\n";
-			#} else {
-			#		echo "The signature is NOT valid\n";
-			#}
-			
-			
-			#$es_valido = json_decode($header, true)["kid"] === $secret;
+			$es_valido = json_decode($header, true)["kid"] === $secret;
 			
 			#var_dump($es_valido, $expira_token);
-			#if ($expira_token || !$signatureValid) {
-				#return FALSE;
-			#	return TRUE;
-			#} else {
-			#	return TRUE;
-			#}
+			if ($expira_token || !$es_valido) {
+				return FALSE;
+			} else {
+				return TRUE;
+			}
 		}
 
-		private function getKey($key_url) {
+		function getKey($key_url) {
 			#$header = array("Authorization: Bearer {$access_token}");
 			
 			$curl = curl_init();
@@ -369,11 +284,6 @@ class ProductoController extends Controller
 				return json_decode($response, true)["keys"][1]["kid"];
 			return null; #json_decode($response, true);
 		}
-		
-		private function getProjectRoot()
-    {
-        return dirname(__DIR__);
-    }
 
 	    /**
      * @param Category[] $categories
@@ -423,7 +333,7 @@ class ProductoController extends Controller
 
 		public function actionLista(): JsonResponse
     {
-    	#	var_dump(Yii::$app->request->headers['authorization']);
+    		#var_dump(Yii::$app->request->headers['referer']);
     	#var_dump($this->authenticate());
     	#exit;
     		if ($this->authenticate())
